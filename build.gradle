@@ -1,0 +1,32 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+compileJava.options.encoding = 'UTF-8'
+
+sourceCompatibility = 1.7
+version = '1.0'
+jar {
+	manifest {
+		attributes 'Implementation-Title': 'Implementation of Allen\'s temporal interval relationships and path consistency algorithm', 'Implementation-Version': version
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+test {
+	systemProperties 'property': 'value'
+}
+
+uploadArchives {
+	repositories {
+		flatDir {
+			dirs 'repos'
+		}
+	}
+}
