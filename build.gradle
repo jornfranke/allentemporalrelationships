@@ -3,7 +3,7 @@ apply plugin: 'eclipse'
 apply plugin: 'application'
 compileJava.options.encoding = 'UTF-8'
 
-sourceCompatibility = 1.7
+sourceCompatibility = 1.8
 version = '1.0'
 jar {
 	manifest {
