@@ -34,7 +34,10 @@ public class ConstraintNetwork<E> {
 	// store the constraint network as arraylist (most performant)
 	private ArrayList<ArrayList<Short>> constraintnetwork;
 	
-	
+	// store results from path consistency check after adding constraints
+	private boolean previouslyInconsistent=false;	
+
+
 	// representation of the constraints in binary format
 	public final static short bin_before = 1; // 0000000000000001
 	public final static short bin_after = 2;  // 0000000000000010
@@ -187,32 +190,7 @@ public class ConstraintNetwork<E> {
 
 	}
 	
-	/*
-	 * Removes a node from the list of modeled nodes and the constraint network
-	 * 
-	 * @param reovedNode Node to be removed from the list of modeled nodes and the constraint network
-	 * 
-	 * @return true if the Node has been successfully removed, false if not
-	 * 
-	 */
 	
-	public boolean removeNode(Node<E> removedNode) {
-		if (this.modeledNodes.contains(removedNode)) {
-				this.modeledNodes.remove(removedNode);
-		} else {
-			return false;
-		}
-		// remove all the constraint defined to that Node
-		Iterator<Constraint<E>> modeledConstraintIterator = this.modeledConstraints.iterator();
-		while (modeledConstraintIterator.hasNext()==true) {
-			Constraint<E> currentConstraint = modeledConstraintIterator.next();
-			if ((currentConstraint.getSourceNode().equals(removedNode)) || (currentConstraint.getDestinationNode().equals(removedNode))) {
-				modeledConstraintIterator.remove();
-			}
-		}
-		this.rebuild();
-		return true;
-	}
 	
 	/*
 	 * This method adds a constraint to the list of modeled constraints and the constraint network
@@ -247,7 +225,7 @@ public class ConstraintNetwork<E> {
 		}
 		this.addConstraintToConstraintNetwork(constraintAdd);
 		// execute path consistency to have a correct constraint network
-		this.pathConsistency();
+		if (this.pathConsistency()==false) this.previouslyInconsistent=true;
 		return true;
 	}
 	
@@ -270,51 +248,7 @@ public class ConstraintNetwork<E> {
 		this.constraintnetwork.get(j).set(i, this.inverseConstraintsShort(constraintAdd.getConstraints()));
 
 	}
-	
-	
-	/*
-	 * Remove a constraint from the network. Please note that this function can be costly, because it requires a full
-	 * execution of the path consistency algorithm (O(N^3)). It rebuilds the constraint network afterwards (to gain correct results
-	 * when using the path consistency method)
-	 * 
-	 * @constraintRemove the constraint to be removed 
-	 * 
-	 * @return true, constraint has been successfully removed, false if not
-	 * 
-	 */
-	
-	public boolean removeConstraint(Constraint<E> constraintRemove) {
-		if (this.modeledConstraints.contains((constraintRemove))) {
-			this.modeledConstraints.remove(constraintRemove);
-		} else {
-			return false;
-		}
-		this.rebuild();
-		return true;
-	}
-	
-	
-	/*
-	 * Rebuilds the constraint network (only for the case that constraints have been removed)
-	 * 
-	 */
-	
-	private void rebuild() {
-		constraintnetwork.clear();
-		// add all nodes
-		Iterator<Node<E>> modeledNodesIterator = this.modeledNodes.iterator();
-		while (modeledNodesIterator.hasNext()) {
-			Node<E> currentNode = modeledNodesIterator.next();
-			this.addNodeToConstraintNetwork(currentNode);
-		}
-		// add all constraints
-		Iterator<Constraint<E>> modeledConstraintsIterator = this.modeledConstraints.iterator();
-		while (modeledConstraintsIterator.hasNext()) {
-			Constraint<E> currentConstraint = modeledConstraintsIterator.next();
-			this.addConstraintToConstraintNetwork(currentConstraint);
-		}
-		
-	}
+
 	
 	/*
 	 * Implements allen's path consistency algorithm. Please note that the algorithm may not be able to detect all inconsistent networks
@@ -326,6 +260,7 @@ public class ConstraintNetwork<E> {
 	 */
 	
 	public boolean pathConsistency() {
+		if (previouslyInconsistent==true) return false; // network has not changed and is still inconsistent
 		if (this.modeledConstraints.size()==0) return true; // no constraint => nothing todo		
 		ArrayList<Pair<Integer,Integer>> batchStack = new ArrayList<Pair<Integer,Integer>>();
 		// cache to check if an entry is already on the stack => faster then looking up the whole stack each time

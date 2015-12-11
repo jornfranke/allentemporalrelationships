@@ -148,8 +148,6 @@ public class TestConstraintNetwork {
 		assertEquals(myConstraintNetwork.getModeledNodes().size(),6);
 		assertEquals(myConstraintNetwork.getModeledConstraints().size(),6);
 		assertEquals(myConstraintNetwork.pathConsistency(),false);	
-		assertEquals(myConstraintNetwork.removeConstraint(constraint41),true);	
-		assertEquals(myConstraintNetwork.pathConsistency(),false);	
 	}
 
 
@@ -194,8 +192,7 @@ public class TestConstraintNetwork {
 		assertEquals(myConstraintNetwork.getModeledNodes().size(),6);
 		assertEquals(myConstraintNetwork.getModeledConstraints().size(),6);
 		assertEquals(myConstraintNetwork.pathConsistency(),false);	
-		assertEquals(myConstraintNetwork.removeConstraint(constraint41),true);	
-		assertEquals(myConstraintNetwork.pathConsistency(),false);	
+	
 	}
 
 
