@@ -105,7 +105,7 @@ public class TestConstraintNetwork {
 	}
 
 	/*
-	 * Github Issue #1
+	 * Github Issue #1 _ 1
 	 * FIRST CASE
 	 * 2 BEFORE 0
 	 * 3 BEFORE 4
@@ -119,7 +119,7 @@ public class TestConstraintNetwork {
 	 */
 	
 	@Test
-	public void testPathConsistency_GithubIssue1() throws Exception {
+	public void testPathConsistency_GithubIssue1_1() throws Exception {
 		ConstraintNetwork<String> myConstraintNetwork = new ConstraintNetwork<String>();
 		Node<String> node0 = new Node<String>("0");
 		myConstraintNetwork.addNode(node0);
@@ -142,12 +142,62 @@ public class TestConstraintNetwork {
 		Constraint<String> constraint03 = new Constraint<String> (node0,node3,ConstraintNetwork.bin_equals);
 		myConstraintNetwork.addConstraint(constraint03);
 		Constraint<String> constraint42 = new Constraint<String> (node4,node2,ConstraintNetwork.bin_meets);
-		myConstraintNetwork.addConstraint(constraint42);
-		Constraint<String> constraint51 = new Constraint<String> (node4,node2,ConstraintNetwork.bin_finishes);
+		myConstraintNetwork.addConstraint(constraint42);	
+		Constraint<String> constraint51 = new Constraint<String> (node5,node1,ConstraintNetwork.bin_finishes);
 		myConstraintNetwork.addConstraint(constraint51);
+		assertEquals(myConstraintNetwork.getModeledNodes().size(),6);
+		assertEquals(myConstraintNetwork.getModeledConstraints().size(),6);
 		assertEquals(myConstraintNetwork.pathConsistency(),false);	
 		assertEquals(myConstraintNetwork.removeConstraint(constraint41),true);	
 		assertEquals(myConstraintNetwork.pathConsistency(),false);	
 	}
+
+
+	/*
+	 * Github Issue #1 _ 2
+	 * 0 equals 3
+	 * 5 finishes 1
+	 * 4 meets 2
+	 * 2 before 0
+	 * 3 before 4
+	 * 4 before 1
+	 * 
+	 */
+
+	@Test
+	public void testPathConsistency_GithubIssue1_2() throws Exception {
+		ConstraintNetwork<String> myConstraintNetwork = new ConstraintNetwork<String>();
+		Node<String> node0 = new Node<String>("0");
+		myConstraintNetwork.addNode(node0);
+		Node<String> node1 = new Node<String>("1");
+		myConstraintNetwork.addNode(node1);
+		Node<String> node2 = new Node<String>("2");
+		myConstraintNetwork.addNode(node2);
+		Node<String> node3 = new Node<String>("3");
+		myConstraintNetwork.addNode(node3);
+		Node<String> node4 = new Node<String>("4");
+		myConstraintNetwork.addNode(node4);
+		Node<String> node5 = new Node<String>("5");
+		myConstraintNetwork.addNode(node5);
+		Constraint<String> constraint03 = new Constraint<String> (node0,node3,ConstraintNetwork.bin_equals);
+		myConstraintNetwork.addConstraint(constraint03);
+		Constraint<String> constraint51 = new Constraint<String> (node5,node1,ConstraintNetwork.bin_finishes);
+		myConstraintNetwork.addConstraint(constraint51);
+		Constraint<String> constraint42 = new Constraint<String> (node4,node2,ConstraintNetwork.bin_meets);
+		myConstraintNetwork.addConstraint(constraint42);
+		Constraint<String> constraint20 = new Constraint<String> (node2,node0,ConstraintNetwork.bin_before);
+		myConstraintNetwork.addConstraint(constraint20);
+		Constraint<String> constraint34 = new Constraint<String> (node3,node4,ConstraintNetwork.bin_before);
+		myConstraintNetwork.addConstraint(constraint34);
+		Constraint<String> constraint41 = new Constraint<String> (node4,node1,ConstraintNetwork.bin_before);
+		myConstraintNetwork.addConstraint(constraint41);
+		assertEquals(myConstraintNetwork.getModeledNodes().size(),6);
+		assertEquals(myConstraintNetwork.getModeledConstraints().size(),6);
+		assertEquals(myConstraintNetwork.pathConsistency(),false);	
+		assertEquals(myConstraintNetwork.removeConstraint(constraint41),true);	
+		assertEquals(myConstraintNetwork.pathConsistency(),false);	
+	}
+
+
 
 }
